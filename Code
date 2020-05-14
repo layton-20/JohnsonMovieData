@@ -1,0 +1,206 @@
+CREATE TABLE Customer 
+( CustomerID VARCHAR(8) UNIQUE NOT NULL, 
+  CustFirstName VARCHAR(50) NOT NULL,
+  CustLastName VARCHAR(50) NOT NULL,
+  CustStreet VARCHAR(50),
+  CustCity VARCHAR(50),
+  CustState CHAR(2),
+  CustZip CHAR(5),
+  CustPhone CHAR(10),
+  PreviousRentalNo VARCHAR(5),
+  CONSTRAINT PKCustomer Primary Key (CustomerID) );
+ 
+  CREATE TABLE Distributor
+( DistributorID VARCHAR(8) UNIQUE NOT NULL,
+  DistributorName VARCHAR(100),
+  DistributorPhone CHAR(10), 
+  CONSTRAINT PKDistributor Primary Key (DistributorID) );
+  
+ CREATE TABLE Movie
+( JohnsonMovieID VARCHAR(15) UNIQUE NOT NULL,
+  MovieTitle VARCHAR(100) NOT NULL,
+  YearReleased VARCHAR(4) NOT NULL, 
+  CONSTRAINT PKMovie Primary Key (JohnsonMovieID) );
+     
+CREATE TABLE Video 
+( ItemIDNo VARCHAR(8) UNIQUE NOT NULL,
+  DistributorID VARCHAR(8) NOT NULL,
+  JohnsonMovieID VARCHAR(15) NOT NULL,
+  WholesalePrice DECIMAL(6,2) NOT NULL,
+  RentalPrice DECIMAL(6,2) NOT NULL,
+  Media VARCHAR(15) NOT NULL,
+  MovieTitle VARCHAR(100) NOT NULL,
+  DistSerialNo VARCHAR(15) NOT NULL,
+  CONSTRAINT PKVideo Primary Key (ItemIDNo),
+  CONSTRAINT FKDistributor Foreign Key (DistributorID) REFERENCES Distributor(DistributorID),
+  CONSTRAINT FKMovie Foreign Key (JohnsonMovieID) REFERENCES Movie(JohnsonMovieID)
+  );
+ 
+CREATE TABLE Rental
+( TransactionID VARCHAR(10) UNIQUE NOT NULL,
+  TimeChkdOut TIMESTAMP NOT NULL,
+  RentalPrice DECIMAL(6,2) NOT NULL,
+  DueDate TIMESTAMP NOT NULL, 
+  TimeReturned TIMESTAMP,
+  DaysLate VARCHAR(5),
+  DamagedFees DECIMAL(6,2),
+  NotRewoundFee DECIMAL(6,2), 
+  LateFees DECIMAL(6,2),
+  TaxAmount DECIMAL(6,2),
+  TotalCost DECIMAL(6,2),
+  CustomerID VARCHAR(8) NOT NULL,
+  ItemIDNo VARCHAR(8) NOT NULL,
+  RentalDiscount DECIMAL(6,2),
+  CONSTRAINT PKRental Primary Key (TransactionID),
+  CONSTRAINT FKCustomer Foreign Key (CustomerID) REFERENCES Customer(CustomerID),
+  CONSTRAINT FKItemIDNo Foreign Key (ItemIDNo) REFERENCES Video(ItemIDNo) );
+ 
+ CREATE TABLE Actor
+ (ActorID VARCHAR(10) UNIQUE NOT NULL,
+  ActorFirstName VARCHAR(100) NOT NULL,
+  ActorLastName VARCHAR(100) NOT NULL,
+  CONSTRAINT PKActor Primary Key (ActorID) );
+ 
+ CREATE TABLE Director 
+ (DirectorID VARCHAR(10) UNIQUE NOT NULL,
+  DirectorFirstName VARCHAR(100) NOT NULL,
+  DirectorLastName VARCHAR(100) NOT NULL,
+  CONSTRAINT PKDirector Primary Key (DirectorID) );
+ 
+CREATE TABLE Awards
+(AwardIDPK VARCHAR(10),
+ AwardID VARCHAR(10) UNIQUE,
+ AwardCategory VARCHAR(100),
+ CONSTRAINT PKAwards Primary Key (AwardIDPK) );
+ 
+ CREATE TABLE Genre
+ (GenreID VARCHAR(10) UNIQUE NOT NULL,
+  GenreName VARCHAR(100) NOT NULL,
+  CONSTRAINT PKGenre Primary Key (GenreID) );
+  
+CREATE TABLE MovieAwards
+(AwardID VARCHAR(10),
+JohnsonMovieID VARCHAR(15) NOT NULL,
+CONSTRAINT PKMovieAwards Primary Key (AwardID, JohnsonMovieID),
+CONSTRAINT FKMovie Foreign Key (JohnsonMovieID) REFERENCES Movie(JohnsonMovieID),
+CONSTRAINT FKAward Foreign Key (AwardID) REFERENCES Awards(AwardID) );
+  
+  CREATE TABLE MovieDirectors
+(DirectorID VARCHAR(10) NOT NULL,
+ JohnsonMovieID VARCHAR(15) NOT NULL,
+ AwardID VARCHAR(10),
+ CONSTRAINT PKMovieDirectors Primary Key (DirectorID, JohnsonMovieID),
+ CONSTRAINT FKMovie Foreign Key (JohnsonMovieID) REFERENCES Movie(JohnsonMovieID),
+ CONSTRAINT FKDirector Foreign Key (DirectorID) REFERENCES Director(DirectorID),
+ CONSTRAINT FKAwardID Foreign Key (AwardID) REFERENCES Awards(AwardID) );
+  
+ CREATE TABLE MovieActors
+(ActorID VARCHAR(10) NOT NULL,
+ JohnsonMovieID VARCHAR(15) NOT NULL,
+ AwardID VARCHAR(10),
+ CONSTRAINT PKMovieActors Primary Key (ActorID, JohnsonMovieID),
+ CONSTRAINT FKMovie Foreign Key (JohnsonMovieID) REFERENCES Movie(JohnsonMovieID),
+ CONSTRAINT FKActorID Foreign Key (ActorID) REFERENCES Actor(ActorID),
+ CONSTRAINT FKAwardID Foreign Key (AwardID, JohnsonMovieID) REFERENCES MovieAwards(AwardID, JohnsonMovieID) );
+ 
+ CREATE TABLE MovieGenre
+(GenreID VARCHAR(10) NOT NULL,
+ JohnsonMovieID VARCHAR(15) NOT NULL,
+ CONSTRAINT PKMovieGenre Primary Key (GenreID, JohnsonMovieID),
+ CONSTRAINT FKMovie Foreign Key (JohnsonMovieID) REFERENCES Movie(JohnsonMovieID),
+ CONSTRAINT FKGenre Foreign Key (GenreID) REFERENCES Genre(GenreID) );
+
+ --Customer Table
+INSERT INTO Customer (CustomerID,CustFirstName,CustLastName,CustStreet,CustCity,CustState,CustZip,CustPhone,PreviousRentalNo) VALUES ('C0000001','Monica','Couch','1829 Chestnut Street','Tampa','FL','33634','8135551239','5');
+INSERT INTO Customer (CustomerID,CustFirstName,CustLastName,CustStreet,CustCity,CustState,CustZip,CustPhone,PreviousRentalNo) VALUES ('C0000002','Kim','Hawkins','3212 Badger Pond Lane','Clearwater','FL','34623','7275651239','0');
+INSERT INTO Customer (CustomerID,CustFirstName,CustLastName,CustStreet,CustCity,CustState,CustZip,CustPhone,PreviousRentalNo) VALUES ('C0000003','Allen','Davis','476 Monroe Avenue','Bradenton','FL','34205','9411224019','0');
+INSERT INTO Customer (CustomerID,CustFirstName,CustLastName,CustStreet,CustCity,CustState,CustZip,CustPhone,PreviousRentalNo) VALUES ('C0000004','Anna','Grigg','3051 Bernardo Street','Clearwater','FL','34620','7272535757','2');
+INSERT INTO Customer (CustomerID,CustFirstName,CustLastName,CustStreet,CustCity,CustState,CustZip,CustPhone,PreviousRentalNo) VALUES ('C0000005','Nicholas','Hall','1046 Forbes Road','Bradenton','FL','34207','9417272047','10');
+--Distributor Table
+INSERT INTO Distributor (DistributorID,DistributorName,DistributorPhone) VALUES ('D0000001','Michaels Videos','9415558135');
+INSERT INTO Distributor (DistributorID,DistributorName,DistributorPhone) VALUES ('D0000002','Mega Movies Bradenton','9415558595');
+INSERT INTO Distributor (DistributorID,DistributorName,DistributorPhone) VALUES ('D0000003','Florida Videos','7275554758');
+INSERT INTO Distributor (DistributorID,DistributorName,DistributorPhone) VALUES ('D0000004','Videos by Vincent','8135555025');
+INSERT INTO Distributor (DistributorID,DistributorName,DistributorPhone) VALUES ('D0000005','Super Video','7275558941');
+--Movie TABLE
+INSERT INTO Movie (JohnsonMovieID,MovieTitle,YearReleased) VALUES ('M00000000000001','Avengers Endgame','2019');
+INSERT INTO Movie (JohnsonMovieID,MovieTitle,YearReleased) VALUES ('M00000000000002','Jurassic Park','1993');
+INSERT INTO Movie (JohnsonMovieID,MovieTitle,YearReleased) VALUES ('M00000000000003','The Shape of Water','2017');
+INSERT INTO Movie (JohnsonMovieID,MovieTitle,YearReleased) VALUES ('M00000000000004','La La Land','2016');
+INSERT INTO Movie (JohnsonMovieID,MovieTitle,YearReleased) VALUES ('M00000000000005','Argo','2012');
+--Video Table
+INSERT INTO Video (ItemIDNo,DistributorID,JohnsonMovieID,WholesalePrice,RentalPrice,Media,MovieTitle,DistSerialNo) VALUES ('V0000001','D0000001','M00000000000001','10.96','2.5','DVD','Avengers Endgame','S00000010000001');
+INSERT INTO Video (ItemIDNo,DistributorID,JohnsonMovieID,WholesalePrice,RentalPrice,Media,MovieTitle,DistSerialNo) VALUES ('V0000002','D0000002','M00000000000001','8.88','2.5','DVD','Avengers Endgame','S00000020000001');
+INSERT INTO Video (ItemIDNo,DistributorID,JohnsonMovieID,WholesalePrice,RentalPrice,Media,MovieTitle,DistSerialNo) VALUES ('V0000003','D0000003','M00000000000002','12.11','1.8','VCR','Jurassic Park','S00000030000001');
+INSERT INTO Video (ItemIDNo,DistributorID,JohnsonMovieID,WholesalePrice,RentalPrice,Media,MovieTitle,DistSerialNo) VALUES ('V0000004','D0000001','M00000000000003','10.96','2.15','DVD','The Shape of Water','S00000010000002');
+INSERT INTO Video (ItemIDNo,DistributorID,JohnsonMovieID,WholesalePrice,RentalPrice,Media,MovieTitle,DistSerialNo) VALUES ('V0000005','D0000003','M00000000000004','12.11','1.75','VCR','La La Land','S00000030000002');
+
+--Transaction TABLE
+INSERT INTO Rental (TransactionID,TimeChkdOut,RentalPrice,DueDate,TimeReturned,DaysLate,DamagedFees,NotRewoundFee,TaxAmount,TotalCost,CustomerID,LateFees,ItemIDNo,RentalDiscount) VALUES ('T000000001','2019-12-15 12:30:54','1.75','2019-12-22 12:30:54','2019-12-23 12:50:01','1','0','0','0.12','2.37','C0000004','0.5','V0000005','0.00');
+INSERT INTO Rental (TransactionID,TimeChkdOut,RentalPrice,DueDate,TimeReturned,DaysLate,DamagedFees,NotRewoundFee,TaxAmount,TotalCost,CustomerID,LateFees,ItemIDNo,RentalDiscount) VALUES ('T000000002','2019-12-15 13:20:29','2.15','2019-12-22 13:20:29','2019-12-20 11:15:19','0','0','1.25','0.15','3.34','C0000003','0','V0000004','-0.22');
+INSERT INTO Rental (TransactionID,TimeChkdOut,RentalPrice,DueDate,TimeReturned,DaysLate,DamagedFees,NotRewoundFee,TaxAmount,TotalCost,CustomerID,LateFees,ItemIDNo,RentalDiscount) VALUES ('T000000003','2019-12-15 14:00:04','2.5','2019-12-22 14:00:04','2019-12-22 10:38:31','0','10.96','0','0.18','13.39','C0000005','0','V0000001','-0.25');
+INSERT INTO Rental (TransactionID,TimeChkdOut,RentalPrice,DueDate,TimeReturned,DaysLate,DamagedFees,NotRewoundFee,TaxAmount,TotalCost,CustomerID,LateFees,ItemIDNo,RentalDiscount) VALUES ('T000000004','2019-12-15 14:15:48','1.8','2019-12-22 14:15:48','2019-12-22 09:45:15','0','0','1.25','0.13','3.18','C0000002','0','V0000003','0.00');
+INSERT INTO Rental (TransactionID,TimeChkdOut,RentalPrice,DueDate,TimeReturned,DaysLate,DamagedFees,NotRewoundFee,TaxAmount,TotalCost,CustomerID,LateFees,ItemIDNo,RentalDiscount) VALUES ('T000000005','2019-12-15 15:45:08','2.5','2019-12-22 15:45:08','2019-12-21 13:24:29','1','0','0','0.18','3.18','C0000001','0.5','V0000002','0.00');
+--Actor TABLE
+INSERT INTO Actor (ActorID,ActorFirstName,ActorLastName) VALUES ('O000000001','Emma','Stone');
+INSERT INTO Actor (ActorID,ActorFirstName,ActorLastName) VALUES ('O000000002','Ryan','Gosling');
+INSERT INTO Actor (ActorID,ActorFirstName,ActorLastName) VALUES ('O000000003','Scarlett','Johansson');
+INSERT INTO Actor (ActorID,ActorFirstName,ActorLastName) VALUES ('O000000004','Chris','Evans');
+INSERT INTO Actor (ActorID,ActorFirstName,ActorLastName) VALUES ('O000000005','Chris','Hemsworth');
+
+--Director Table
+INSERT INTO Director (DirectorID,DirectorFirstName,DirectorLastName) VALUES ('R000000001','Anthony','Russo');
+INSERT INTO Director (DirectorID,DirectorFirstName,DirectorLastName) VALUES ('R000000002','Joe','Russo');
+INSERT INTO Director (DirectorID,DirectorFirstName,DirectorLastName) VALUES ('R000000003','Steven','Spielberg');
+INSERT INTO Director (DirectorID,DirectorFirstName,DirectorLastName) VALUES ('R000000004','Colin','Trevorrow');
+INSERT INTO Director (DirectorID,DirectorFirstName,DirectorLastName) VALUES ('R000000005','J.A.','Bayona');
+INSERT INTO Director (DirectorID,DirectorFirstName,DirectorLastName) VALUES ('R000000006','Guillermo','del Toro');
+
+--Awards TABLE
+INSERT INTO Awards (AwardIDPK,AwardID,AwardCategory) VALUES ('P000000000','A000000000','Not Applicable');
+INSERT INTO Awards (AwardIDPK,AwardID,AwardCategory) VALUES ('P000000001','A000000001','Best Director');
+INSERT INTO Awards (AwardIDPK,AwardID,AwardCategory) VALUES ('P000000002','A000000002','Best Actress');
+INSERT INTO Awards (AwardIDPK,AwardID,AwardCategory) VALUES ('P000000003','A000000003','Best Sound Mixing');
+INSERT INTO Awards (AwardIDPK,AwardID,AwardCategory) VALUES ('P000000004','A000000004','Best Visual Effects');
+INSERT INTO Awards (AwardIDPK,AwardID,AwardCategory) VALUES ('P000000005','A000000005','Best Sound Editing');
+INSERT INTO Awards (AwardIDPK,AwardID,AwardCategory) VALUES ('P000000006','A000000006','Best Picture');
+INSERT INTO Awards (AwardIDPK,AwardID,AwardCategory) VALUES ('P000000007','A000000007','Best Original Music Score');
+--Genre Table
+INSERT INTO Genre (GenreID,GenreName) VALUES ('G000000001','Action');
+INSERT INTO Genre (GenreID,GenreName) VALUES ('G000000002','Adventure');
+INSERT INTO Genre (GenreID,GenreName) VALUES ('G000000003','Science Fiction');
+INSERT INTO Genre (GenreID,GenreName) VALUES ('G000000004','Thriller');
+INSERT INTO Genre (GenreID,GenreName) VALUES ('G000000005','Fantasy');
+--MovieAwards TABLE
+INSERT INTO MovieAwards (AwardID,JohnsonMovieID) VALUES ('A000000001','M00000000000003');
+INSERT INTO MovieAwards (AwardID,JohnsonMovieID) VALUES ('A000000002','M00000000000004');
+INSERT INTO MovieAwards (AwardID,JohnsonMovieID) VALUES ('A000000003','M00000000000002');
+INSERT INTO MovieAwards (AwardID,JohnsonMovieID) VALUES ('A000000004','M00000000000002');
+INSERT INTO MovieAwards (AwardID,JohnsonMovieID) VALUES ('A000000005','M00000000000002');
+INSERT INTO MovieAwards (AwardID,JohnsonMovieID) VALUES ('A000000006','M00000000000003');
+INSERT INTO MovieAwards (AwardID,JohnsonMovieID) VALUES ('A000000007','M00000000000003');
+INSERT INTO MovieAwards (AwardID,JohnsonMovieID) VALUES ('A000000000','M00000000000001');
+INSERT INTO MovieAwards (AwardID,JohnsonMovieID) VALUES ('A000000000','M00000000000002');
+INSERT INTO MovieAwards (AwardID,JohnsonMovieID) VALUES ('A000000000','M00000000000003');
+INSERT INTO MovieAwards (AwardID,JohnsonMovieID) VALUES ('A000000000','M00000000000004');
+INSERT INTO MovieAwards (AwardID,JohnsonMovieID) VALUES ('A000000000','M00000000000005');
+--Moviedirectors table
+INSERT INTO MovieDirectors (DirectorID,JohnsonMovieID,AwardID) VALUES ('R000000001','M00000000000001','A000000000');
+INSERT INTO MovieDirectors (DirectorID,JohnsonMovieID,AwardID) VALUES ('R000000002','M00000000000001','A000000000');
+INSERT INTO MovieDirectors (DirectorID,JohnsonMovieID,AwardID) VALUES ('R000000003','M00000000000002','A000000000');
+INSERT INTO MovieDirectors (DirectorID,JohnsonMovieID,AwardID) VALUES ('R000000004','M00000000000002','A000000000');
+INSERT INTO MovieDirectors (DirectorID,JohnsonMovieID,AwardID) VALUES ('R000000005','M00000000000002','A000000000');
+INSERT INTO MovieDirectors (DirectorID,JohnsonMovieID,AwardID) VALUES ('R000000006','M00000000000003','A000000001');
+
+--MovieActors Table
+INSERT INTO MovieActors (ActorID,JohnsonMovieID,AwardID) VALUES ('O000000001','M00000000000004','A000000002');
+INSERT INTO MovieActors (ActorID,JohnsonMovieID,AwardID) VALUES ('O000000002','M00000000000004','A000000000');
+INSERT INTO MovieActors (ActorID,JohnsonMovieID,AwardID) VALUES ('O000000003','M00000000000001','A000000000');
+INSERT INTO MovieActors (ActorID,JohnsonMovieID,AwardID) VALUES ('O000000004','M00000000000001','A000000000');
+INSERT INTO MovieActors (ActorID,JohnsonMovieID,AwardID) VALUES ('O000000005','M00000000000001','A000000000');
+--Movie Genre TABLE
+INSERT INTO MovieGenre (GenreID,JohnsonMovieID) VALUES ('G000000001','M00000000000002');
+INSERT INTO MovieGenre (GenreID,JohnsonMovieID) VALUES ('G000000002','M00000000000002');
+INSERT INTO MovieGenre (GenreID,JohnsonMovieID) VALUES ('G000000003','M00000000000002');
+INSERT INTO MovieGenre (GenreID,JohnsonMovieID) VALUES ('G000000004','M00000000000002');
+INSERT INTO MovieGenre (GenreID,JohnsonMovieID) VALUES ('G000000005','M00000000000002');
