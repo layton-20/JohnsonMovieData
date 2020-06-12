@@ -1,3 +1,4 @@
+/* Table creation */
 CREATE TABLE Customer 
 ( CustomerID VARCHAR(8) UNIQUE NOT NULL, 
   CustFirstName VARCHAR(50) NOT NULL,
@@ -110,6 +111,7 @@ CONSTRAINT FKAward Foreign Key (AwardID) REFERENCES Awards(AwardID) );
  CONSTRAINT FKMovie Foreign Key (JohnsonMovieID) REFERENCES Movie(JohnsonMovieID),
  CONSTRAINT FKGenre Foreign Key (GenreID) REFERENCES Genre(GenreID) );
 
+/*Data Insertion*/
  --Customer Table
 INSERT INTO Customer (CustomerID,CustFirstName,CustLastName,CustStreet,CustCity,CustState,CustZip,CustPhone,PreviousRentalNo) VALUES ('C0000001','Monica','Couch','1829 Chestnut Street','Tampa','FL','33634','8135551239','5');
 INSERT INTO Customer (CustomerID,CustFirstName,CustLastName,CustStreet,CustCity,CustState,CustZip,CustPhone,PreviousRentalNo) VALUES ('C0000002','Kim','Hawkins','3212 Badger Pond Lane','Clearwater','FL','34623','7275651239','0');
@@ -204,3 +206,25 @@ INSERT INTO MovieGenre (GenreID,JohnsonMovieID) VALUES ('G000000002','M000000000
 INSERT INTO MovieGenre (GenreID,JohnsonMovieID) VALUES ('G000000003','M00000000000002');
 INSERT INTO MovieGenre (GenreID,JohnsonMovieID) VALUES ('G000000004','M00000000000002');
 INSERT INTO MovieGenre (GenreID,JohnsonMovieID) VALUES ('G000000005','M00000000000002');
+
+/*Specific Queries*/
+
+/*Retrieve all of the customers' names, account numbers, and addresses (street and zip code only), sorted by account number.*/
+SELECT CustFirstName, CustomerID, CustStreet, CustZip FROM Customer ORDER BY CustomerID;
+
+/*Retrieve all of the DVDs rented in the last 30 days and sort in chronological rental date order*/
+SELECT Video.MovieTitle, Rental.ItemIDNo, Rental.TimeChkdOut
+FROM Video
+INNER JOIN Rental ON Rental.ItemIDNo = Video.ItemIDNo
+WHERE Rental.TimeChkdOut >= (NOW() -interval '30 days')
+ORDER BY TimeChkdOut;
+
+/*Update a customer name to change their maiden names to married names. You can choose which row to update.*/ 
+UPDATE Customer
+SET CustLastName = 'Wilson'
+WHERE CustomerID = 'C0000001';
+
+
+/*Delete a specific customer from the database. You can choose which row to delete*/
+DELETE FROM Customer
+WHERE CustomerID = 'C0000004';
